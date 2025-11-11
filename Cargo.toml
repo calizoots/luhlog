@@ -1,0 +1,17 @@
+[package]
+name = "luhlog"
+edition = "2021"
+version = "0.0.2"
+authors = ["cali zoots <calizoots@gmail.com>"]
+description = "A horrible Rust error logging library"
+license = "GPL-3.0-or-later"
+license-file = "LICENSE"
+repository = "https://github.com/calizoots/luhlog"
+
+[features]
+default = []
+color = ["colored"]
+
+[dependencies]
+chrono = { version = "0.4" }
+colored = { version = "3", optional = true }

@@ -1,0 +1,74 @@
+[2025-11-10 18:43:14] [info] [app] src/lib.rs:390 - Logged to file
+[2025-11-10 18:43:14] [warn] [app] src/lib.rs:391 - Another file log
+[2025-11-10 18:43:43] [info] [app] src/lib.rs:391 - Logged to file
+[2025-11-10 18:43:43] [warn] [app] src/lib.rs:392 - Another file log
+[2025-11-10 18:43:51] [info] [app] src/lib.rs:391 - Logged to file
+[2025-11-10 18:43:51] [warn] [app] src/lib.rs:392 - Another file log
+[2025-11-10 18:46:06] [info] [app] src/lib.rs:390 - Logged to file
+[2025-11-10 18:46:06] [warn] [app] src/lib.rs:391 - Another file log
+[18:56:06] [info] (app) src/lib.rs:389 -> Logged to file
+[18:56:06] [warn] (app) src/lib.rs:390 -> Another file log
+[19:03:12] [info] (app) src/lib.rs:406 -> Logged to file
+[19:03:12] [warn] (app) src/lib.rs:407 -> Another file log
+[19:08:04] [[32minfo[0m] (app) src/lib.rs:415 -> Logged to file
+[19:08:04] [[33mwarn[0m] (app) src/lib.rs:416 -> Another file log
+[19:08:15] [[34minfo[0m] (app) src/lib.rs:415 -> Logged to file
+[19:08:15] [[33mwarn[0m] (app) src/lib.rs:416 -> Another file log
+[19:08:28] [[34minfo[0m] (app) src/lib.rs:415 -> Logged to file
+[19:08:28] [[33mwarn[0m] (app) src/lib.rs:416 -> Another file log
+[19:09:01] [[34minfo[0m] (app) src/lib.rs:416 -> Logged to file
+[19:09:01] [[33mwarn[0m] (app) src/lib.rs:417 -> Another file log
+[19:09:38] [[34minfo[0m] (app) src/lib.rs:416 -> Logged to file
+[19:09:38] [[33mwarn[0m] (app) src/lib.rs:417 -> Another file log
+[19:10:42] [[34minfo[0m] (app) src/lib.rs:416 -> Logged to file
+[19:10:42] [[33mwarn[0m] (app) src/lib.rs:417 -> Another file log
+[19:17:47] [[34minfo[0m] (app) src/lib.rs:417 -> Logged to file
+[19:17:47] [[33mwarn[0m] (app) src/lib.rs:418 -> Another file log
+[19:24:22] [[34minfo[0m] (app) src/lib.rs:441 -> Logged to file
+[19:24:22] [[33mwarn[0m] (app) src/lib.rs:442 -> Another file log
+[19:24:49] [[34minfo[0m] (app) src/lib.rs:441 -> Logged to file
+[19:24:49] [[33mwarn[0m] (app) src/lib.rs:442 -> Another file log
+[19:29:01] [[34minfo[0m] (app) src/lib.rs:478 -> Logged to file
+[19:29:01] [[33mwarn[0m] (app) src/lib.rs:479 -> Another file log
+[19:31:04] [[34minfo[0m] (app) src/lib.rs:485 -> Logged to file
+[19:31:04] [[33mwarn[0m] (app) src/lib.rs:486 -> Another file log
+[19:33:34] [info] (app) src/lib.rs:485 -> Logged to file
+[19:33:34] [warn] (app) src/lib.rs:486 -> Another file log
+[21:42:27] [info] (app) src/lib.rs:509 -> Logged to file
+[21:42:27] [warn] (app) src/lib.rs:510 -> Another file log
+[22:34:17] [info] (app) src/lib.rs:574 -> Info message
+[22:34:17] [info] (my_app) src/lib.rs:583 -> JSON formatted log
+[22:34:17] [warn] (app) src/lib.rs:584 -> Another JSON log
+[22:34:17] [info] (app) src/lib.rs:630 -> This won't print to stdout
+[22:34:17] [info] (app) src/lib.rs:621 -> Custom format
+[22:34:17] [error] (app) bine other
+[22:34:17] [info] (app) src/lib.rs:596 -> Logged to file
+[22:34:17] [info] (app) src/lib.rs:556 -> Hello world
+[22:34:17] [warn] (app) src/lib.rs:597 -> Another file log
+[22:34:17] [warn] (app) src/lib.rs:557 -> Warning: 42
+[22:35:05] [info] (app) src/lib.rs:596 -> Logged to file
+[22:35:05] [info] (app) src/lib.rs:630 -> This won't print to stdout
+[22:35:05] [error] (app) bine other
+[22:35:29] [info] (my_app) src/lib.rs:583 -> JSON formatted log
+[22:35:29] [error] (app) bine other
+[22:35:29] [info] (app) src/lib.rs:574 -> Info message
+[22:35:49] [info] (app) src/lib.rs:574 -> Info message
+[22:35:49] [info] (my_app) src/lib.rs:583 -> JSON formatted log
+[22:35:49] [warn] (app) src/lib.rs:584 -> Another JSON log
+[22:35:49] [info] (app) src/lib.rs:596 -> Logged to file
+[22:35:49] [warn] (app) src/lib.rs:597 -> Another file log
+[22:35:49] [error] (app) bine other
+[22:35:49] [info] (app) src/lib.rs:556 -> Hello world
+[22:35:49] [warn] (app) src/lib.rs:557 -> Warning: 42
+[22:35:49] [info] (app) src/lib.rs:621 -> Custom format
+[22:35:49] [info] (app) src/lib.rs:630 -> This won't print to stdout
+[warn] in the file >.<
+[22:35:57] [info] (app) src/lib.rs:596 -> Logged to file
+[22:35:57] [warn] (app) src/lib.rs:597 -> Another file log
+[warn] in the file >.<
+[00:16:40] [info] (app) src/lib.rs:1208 -> Logged to file
+[00:16:40] [warn] (app) src/lib.rs:1209 -> Another file log
+[warn] in the file >.<
+[00:17:09] [info] (app) src/lib.rs:1209 -> Logged to file
+[00:17:09] [warn] (app) src/lib.rs:1210 -> Another file log
+[warn] in the file >.<
