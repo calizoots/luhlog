@@ -1,4 +1,5 @@
 //! [![github]](https://github.com/calizoots/luhlog)&ensp;[![crates-io]](https://crates.io/crates/luhlog)&ensp;[![docs-rs]](https://docs.rs/luhlog)
+//!
 //! [github]: https://img.shields.io/badge/github-calizoots/luhlog-8da0cb?style=for-the-badge&labelColor=555555&logo=github
 //! [crates-io]: https://img.shields.io/crates/v/luhlog.svg?style=for-the-badge&color=fc8d62&logo=rust
 //! [docs-rs]: https://img.shields.io/badge/docs.rs-luhlog-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs
@@ -9,19 +10,19 @@
 //! to use this. Please take care of your mental health >.<
 //! > It is made with love though s.c <3 2025. LKK FREE BINE
 //!
-//! So as a library we expose `luhtwin::Logger` and trait `luhtwin::Log`
-//! for making custom log and also exposing `luhtwin::LogFormatter` for
+//! So as a library we expose `luhlog::Logger` and trait `luhlog::Log`
+//! for making custom log and also exposing `luhlog::LogFormatter` for
 //! formatting.
-//! 
-//! `luhtwin::Level` has 5 levels similar to the log crate with Trace 
-//! being the lowest and Error being the heighest in terms of precedence 
+//!
+//! `luhlog::Level` has 6 levels similar to the log crate with Trace 
+//! being the lowest and Critical being the heighest in terms of precedence 
 //! we have corresponding macros for those levels for now they only 
 //! correspond to the global logger instance through get_logger().
 //! 
 //! > This is still in dev stages I will ammend that soon.
 //! > Thank you for your patience.
 //! 
-//! We also provide `luhtwin::GlobalLogger` for making your own global
+//! We also provide `luhlog::GlobalLogger` for making your own global
 //! logger instance. Look at examples below for usage...
 //!
 //!
@@ -92,8 +93,8 @@ use std::sync::{Arc, Mutex, RwLock};
 
 use chrono::{DateTime, Local};
 
-/// **`luhtwin::Level`** is an enum representing the verbosity of a given message
-#[derive(Debug, PartialEq, PartialOrd, Copy, Clone)]
+/// **`luhlog::Level`** is an enum representing the verbosity of a given message
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
 pub enum Level {
     /// "Trace" level typically for very verbose logs or "Tracing"
     Trace = 0,
@@ -108,10 +109,13 @@ pub enum Level {
     /// "Error" level
     /// note: no classification between errors for now.
     Error = 4,
+    /// "Critical" level no macro for this level
+    /// Only added as an edge case
+    Critical = 5
 }
 
 impl Level {
-    /// returns the string version of a given `luhtwin::Level`
+    /// returns the string version of a given `luhlog::Level`
     fn name(&self) -> &str {
         match self {
             Level::Trace => "trace",
@@ -119,6 +123,7 @@ impl Level {
             Level::Info => "info",
             Level::Warn => "warn",
             Level::Error => "error",
+            Level::Critical => "critical"
         }
     }
 
@@ -143,7 +148,8 @@ impl Level {
             Level::Debug => name.purple(),
             Level::Info  => name.blue(),
             Level::Warn  => name.yellow(),
-            Level::Error => name.red().bold(),
+            Level::Error => name.red(),
+            Level::Critical => name.red().bold()
         };
 
         return text.to_string()
@@ -156,7 +162,7 @@ impl fmt::Display for Level {
     }
 }
 
-/// `luhtwin::LogRecord` carries all appropriate metadata for a given
+/// `luhlog::LogRecord` carries all appropriate metadata for a given
 /// log entry. There are two ways this is useful to you.
 ///
 /// ## Provided Methods
@@ -259,7 +265,7 @@ impl LogRecord {
     }
 }
 
-/// `luhtwin::LogBuilder` is an easy way to build a `LogRecord`.
+/// `luhlog::LogBuilder` is an easy way to build a `LogRecord`.
 /// Doesn't really do much apart from shorter combinators and
 /// a predefined level for the record.
 ///
@@ -344,9 +350,9 @@ impl LogBuilder {
     }
 }
 
-/// `luhtwin::LogFormatter` decides **how your logs look**.
+/// `luhlog::LogFormatter` decides **how your logs look**.
 ///
-/// This trait is what `luhtwin::Logger` uses internally to turn a raw
+/// This trait is what `luhlog::Logger` uses internally to turn a raw
 /// [`LogRecord`](crate::LogRecord) into something actually readable.
 ///
 /// By default, we ship a few built-ins like:
@@ -444,7 +450,7 @@ impl LogFormatter for CompactFormatter {
     }
 }
 
-/// `luhtwin::JsonFormatter` **barely works at all if you are serious
+/// `luhlog::JsonFormatter` **barely works at all if you are serious
 /// about doing this write your own implementation using serde escaping
 /// this will not work in prod!!!**
 #[derive(Debug, Clone)]
@@ -466,7 +472,7 @@ impl LogFormatter for JsonFormatter {
     }
 }
 
-/// `luhtwin::Log` is the core trait that powers all logging backends.
+/// `luhlog::Log` is the core trait that powers all logging backends.
 ///
 /// Implementing this allows you to define how your logs are handled —
 /// whether you want to print them, write them to disk, send them over
@@ -522,7 +528,7 @@ impl LogFormatter for JsonFormatter {
 /// ```
 /// ----------------------------------------------------------------
 ///
-/// > ✨ Pro tip: you almost never need to implement this manually unless
+/// > ✨ tip: you almost never need to implement this manually unless
 /// you’re doing something different — like remote log streaming or sumn.
 /// Otherwise, [`Logger`](crate::Logger) is plenty.
 pub trait Log: Send + Sync + 'static {
@@ -531,11 +537,11 @@ pub trait Log: Send + Sync + 'static {
     fn flush(&self) {}
 }
 
-/// `luhtwin::Logger` is the main logging backend implementation.
+/// `luhlog::Logger` is the main logging backend implementation.
 /// It handles log filtering, formatting, writing to files, and optional
 /// output to stdout.
 ///
-/// The `Logger` implements [`luhtwin::Log`], so it can be used
+/// The `Logger` implements [`luhlog::Log`], so it can be used
 /// anywhere a generic `Log` trait object is expected.  
 ///
 /// ## Provided Methods
@@ -721,13 +727,13 @@ impl Log for Logger {
     }
 }
 
-/// `luhtwin::GlobalLogger` provides a simple thread-safe global logging
+/// `luhlog::GlobalLogger` provides a simple thread-safe global logging
 /// container. It allows you to store and retrieve a single shared
 /// logger instance across your entire program.
 ///
 /// This is mainly used behind the global functions like
-/// [`luhtwin::set_logger`], [`luhtwin::get_logger`], and
-/// [`luhtwin::clear_logger`], but you can also use it directly if you
+/// [`luhlog::set_logger`], [`luhlog::get_logger`], and
+/// [`luhlog::clear_logger`], but you can also use it directly if you
 /// need a custom global logging instance.
 ///
 /// ## Provided Methods
@@ -836,6 +842,7 @@ static LOGGER: GlobalLogger = GlobalLogger::new();
 /// will write through this logger.
 ///
 /// ## Example
+/// ----------------------------------------------------------------
 /// ```
 /// use luhlog::{set_logger, Logger, Level};
 /// use std::sync::Arc;
@@ -843,6 +850,7 @@ static LOGGER: GlobalLogger = GlobalLogger::new();
 ///     set_logger(Arc::new(Logger::new(Level::Trace)));
 /// }
 /// ```
+/// ----------------------------------------------------------------
 pub fn set_logger(logger: Arc<dyn Log>) {
     LOGGER.set(logger)
 }
@@ -861,6 +869,7 @@ pub fn clear_logger() {
 /// [`Logger`] with `Level::Info` will be returned automatically.
 ///
 /// ## Example
+/// ----------------------------------------------------------------
 /// ```
 /// use luhlog::{get_logger, LogBuilder, Level, Log};
 /// fn main() {
@@ -872,6 +881,7 @@ pub fn clear_logger() {
 ///     );
 /// }
 /// ```
+/// ----------------------------------------------------------------
 pub fn get_logger() -> Arc<dyn Log> {
     LOGGER.get()
 }
@@ -912,6 +922,7 @@ pub fn flush() {
 ///     log!(target: "network", Level::Warn, "ping timeout!");
 /// }
 /// ```
+/// ----------------------------------------------------------------
 #[macro_export]
 macro_rules! log {
     (target: $target:expr, $level:expr, $($arg:tt)*) => {{
@@ -968,6 +979,7 @@ macro_rules! log {
 ///     trace!(target: "math", "x = {}, y = {}", 10, 20);
 /// }
 /// ```
+/// ----------------------------------------------------------------
 #[macro_export]
 macro_rules! trace {
     (target: $target:expr, $($arg:tt)*) => {
@@ -998,6 +1010,7 @@ macro_rules! trace {
 ///     debug!("created user {:?}", "luh_log");
 /// }
 /// ```
+/// ----------------------------------------------------------------
 #[macro_export]
 macro_rules! debug {
     (target: $target:expr, $($arg:tt)*) => {
@@ -1028,6 +1041,7 @@ macro_rules! debug {
 ///     info!("server started on port {}", 8080);
 /// }
 /// ```
+/// ----------------------------------------------------------------
 #[macro_export]
 macro_rules! info {
     (target: $target:expr, $($arg:tt)*) => {
@@ -1058,6 +1072,7 @@ macro_rules! info {
 ///     warn!("disk space running low!");
 /// }
 /// ```
+/// ----------------------------------------------------------------
 #[macro_export]
 macro_rules! warn {
     (target: $target:expr, $($arg:tt)*) => {
@@ -1088,6 +1103,7 @@ macro_rules! warn {
 ///     error!("failed to open config file: {}", "settings.toml");
 /// }
 /// ```
+/// ----------------------------------------------------------------
 #[macro_export]
 macro_rules! error {
     (target: $target:expr, $($arg:tt)*) => {
@@ -1135,6 +1151,7 @@ macro_rules! error {
 ///     set_logger!(my_logger);
 /// }
 /// ```
+/// ----------------------------------------------------------------
 #[macro_export]
 macro_rules! set_logger {
     ($logger:expr) => {{
