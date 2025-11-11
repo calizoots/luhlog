@@ -1,5 +1,5 @@
 //!
-//! # LuhLog System
+//! # LuhLog
 //! ---------------------------------------------------------------------
 //! A horrible way to log your messages. You would have to be sick
 //! to use this. Please take care of your mental health >.<
