@@ -5,13 +5,12 @@ version = "0.0.3"
 authors = ["cali zoots <calizoots@gmail.com>"]
 description = "A horrible Rust logging library"
 license = "GPL-3.0-or-later"
-license-file = "LICENSE"
 repository = "https://github.com/calizoots/luhlog"
 
 [features]
 default = []
-color = ["colored"]
+color = []
 
 [dependencies]
 chrono = { version = "0.4" }
-colored = { version = "3", optional = true }
+luhcore = { version = "0.0.1" }
