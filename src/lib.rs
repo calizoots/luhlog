@@ -427,18 +427,18 @@ impl LogFormatter for DefaultFormatter {
     }
 
     fn format(&self, record: &LogRecord) -> String {
-        let target = record.target.as_deref().unwrap_or("app");
+        let target = record.target.as_deref();
         let timestamp = record.timestamp.format(self.time_format());
 
-        if let (Some(file), Some(line)) = (&record.file, record.line) {
+        if let (Some(file), Some(line), Some(target)) = (&record.file, record.line, target) {
             format!(
                 "[{}] [{:5}] ({}) {}:{} -> {}",
                 timestamp, record.level, target, file, line, record.msg
             )
         } else {
             format!(
-                "[{}] [{:5}] ({}) {}",
-                timestamp, record.level, target, record.msg
+                "[{}] [{:5}] {}",
+                timestamp, record.level, record.msg
             )
         }
     }

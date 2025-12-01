@@ -1,0 +1,11 @@
+fn main() {
+    // some way to save a config to disk
+    luhlog::init_default();
+    // i want to be able to have like a target and different options like log crate
+    info!("server started on port {}", 8080);
+    warn!("cache miss for key {}", "user_42");
+    error!("failed to write to disk: {}", err);
+    // i want to have trace too
+    // and a trait where i can make another log and adapt format easily with a builder
+    // similar to log crate
+}
