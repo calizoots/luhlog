@@ -4,17 +4,17 @@
 [<img alt="crates.io" src="https://img.shields.io/crates/v/luhlog.svg?style=for-the-badge&color=fc8d62&logo=rust" height="20">](https://crates.io/crates/luhlog)
 [<img alt="docs.rs" src="https://img.shields.io/badge/docs.rs-luhlog-66c2a5?style=for-the-badge&labelColor=555555&logo=docs.rs" height="20">](https://docs.rs/luhlog)
 
-A horrible way to log your messages. You would have to be sick to use this.
+A way to log your messages, it is nothing special at all.
 <br>
-Please take care of your mental health >.<
+It has a formatting system, convient macros and a global logger system >.<
 
-> Made with love though s.c <3 2025. LKK FREE BINE
+> It is made with love though s.c <3
 
 As a library, we expose:
 
 - `luhtwin::Logger` and trait `luhtwin::Log` for creating custom loggers.
 - `luhtwin::LogFormatter` for formatting logs.
-- `luhtwin::Level` with 5 levels (Trace, Debug, Info, Warn, Error), similar to the `log` crate.
+- `luhtwin::Level` with 5 well 6 levels (Trace, Debug, Info, Warn, Error and Critical - no macro for critical level -), similar to the `log` crate.
 - Corresponding macros (`trace!`, `debug!`, `info!`, `warn!`, `error!`) for the global logger instance through `get_logger()`.
 
 > This is still in development stages. Thank you for your patience.

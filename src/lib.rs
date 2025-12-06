@@ -6,9 +6,9 @@
 //!
 //! # LuhLog
 //! ---------------------------------------------------------------------
-//! A horrible way to log your messages. You would have to be sick
-//! to use this. Please take care of your mental health >.<
-//! > It is made with love though s.c <3 2025. LKK FREE BINE
+//! A way to log your messages, it is nothing special at all.
+//! It has a formatting system, convient macros and a global logger system >.<
+//! > It is made with love though s.c <3
 //!
 //! So as a library we expose `luhlog::Logger` and trait `luhlog::Log`
 //! for making custom log and also exposing `luhlog::LogFormatter` for
@@ -19,7 +19,7 @@
 //! we have corresponding macros for those levels for now they only 
 //! correspond to the global logger instance through get_logger().
 //! 
-//! > This is still in dev stages I will ammend that soon.
+//! > This is still in dev stages I will amend that soon.
 //! > Thank you for your patience.
 //! 
 //! We also provide `luhlog::GlobalLogger` for making your own global
@@ -222,9 +222,9 @@ impl fmt::Display for Level {
 pub struct LogRecord {
     /// The record's message
     pub msg: String,
-    /// The record's log presidence level
+    /// The record's log precedence level
     pub level: Level,
-    /// An optional abritary name I am calling a "target"
+    /// An optional arbitrary name I am calling a "target"
     pub target: Option<String>,
     /// The record's time (using `chrono` chrate)
     pub timestamp: DateTime<Local>,
@@ -237,6 +237,7 @@ pub struct LogRecord {
 }
 
 impl LogRecord {
+    /// Creates a new log record with the provided [`Level`] and message.
     pub fn new(level: Level, msg: impl Into<String>) -> Self {
         Self {
             msg: msg.into(),
@@ -249,20 +250,20 @@ impl LogRecord {
         }
     }
 
-    /// Changes the record's target
+    /// Sets the record’s target (e.g., subsystem, module, etc).
     pub fn with_target(mut self, target: impl Into<String>) -> Self {
         self.target = Some(target.into());
         self
     }
 
-    /// Changes the record's location
+    /// Attaches file and line information to the record.
     pub fn with_location(mut self, file: impl Into<String>, line: u32) -> Self {
         self.file = Some(file.into());
         self.line = Some(line);
         self
     }
 
-    /// Adds to the record's metadata
+    /// Adds a custom metadata key–value pair to the record.
     pub fn with_metadata(mut self, key: impl Into<String>, value: impl Into<String>) -> Self {
         self.metadata.insert(key.into(), value.into());
         self
@@ -283,7 +284,7 @@ impl LogRecord {
 /// Sets the log level for this record.
 ///
 /// ### `target(target: impl Into<String>) -> Self`
-/// Sets the target (abritary name).
+/// Sets the target (arbitrary name).
 ///
 /// ### `location(file: impl Into<String>, line: u32) -> Self`
 /// Attaches file and line info to the record.
@@ -317,38 +318,39 @@ pub struct LogBuilder {
 }
 
 impl LogBuilder {
+    /// Creates a new builder with a default [`Level::Info`] and message.
     pub fn new(msg: impl Into<String>) -> Self {
         Self {
             record: LogRecord::new(Level::Info, msg)
         }
     }
 
-    /// Changes the record's level.
+    /// Sets the log level for this record.
     pub fn level(mut self, level: Level) -> Self {
         self.record.level = level;
         self
     }
 
-    /// Changes the record's target.
+    /// Sets the target (arbitrary name).
     pub fn target(mut self, target: impl Into<String>) -> Self {
         self.record.target = Some(target.into());
         self
     }
 
-    /// Changes the record's location.
+    /// Attaches file and line info to the record.
     pub fn location(mut self, file: impl Into<String>, line: u32) -> Self {
         self.record.file = Some(file.into());
         self.record.line = Some(line);
         self
     }
 
-    /// Adds to the record's metadata
+    /// Adds an arbitrary key–value pair to the record’s metadata.
     pub fn metadata(mut self, key: impl Into<String>, value: impl Into<String>) -> Self {
         self.record.metadata.insert(key.into(), value.into());
         self
     }
 
-    /// Return the built record.
+    /// Finalises and returns the constructed [`LogRecord`].
     pub fn build(self) -> LogRecord {
         self.record
     }
@@ -366,7 +368,7 @@ impl LogBuilder {
 ///
 /// But of course, you can make your own formatter that fits your needs/wants.
 ///
-/// ## Provided Methods
+/// ## Methods
 /// ----------------------------------------------------------------
 ///
 /// ### `time_format(&self) -> &str`
@@ -411,9 +413,13 @@ impl LogBuilder {
 /// ```
 /// ----------------------------------------------------------------
 pub trait LogFormatter: Send + Sync {
+    /// Returns a strftime-style format string used for timestamps.
+    /// Default is `"%H:%M:%S"`.
     fn time_format(&self) -> &str {
         return "%H:%M:%S";
     }
+
+    /// Called for every log record to generate the final output string.
     fn format(&self, record: &LogRecord) -> String;
 }
 
@@ -454,8 +460,8 @@ impl LogFormatter for CompactFormatter {
     }
 }
 
-/// `luhlog::JsonFormatter` **barely works at all if you are serious
-/// about doing this write your own implementation using serde escaping
+/// `luhlog::JsonFormatter` **barely works at all if you need this
+/// write your own implementation using serde escaping json
 /// this will not work in prod!!!**
 #[derive(Debug, Clone)]
 pub struct JsonFormatter;
@@ -536,8 +542,26 @@ impl LogFormatter for JsonFormatter {
 /// you’re doing something different — like remote log streaming or sumn.
 /// Otherwise, [`Logger`](crate::Logger) is plenty.
 pub trait Log: Send + Sync + 'static {
+    /// Used to determine if a given log level should be processed.
+    /// This is where you can implement filtering logic, e.g.:
+    /// ```ignore
+    /// fn enabled(&self, level: Level) -> bool {
+    ///     level >= self.min_level
+    /// }
     fn enabled(&self, level: Level) -> bool;
+    /// This is called when an event is ready to be logged.  
+    /// Handle it however you like — format it, send it, print it, etc.
+    ///
+    /// ```ignore
+    /// fn log(&self, record: LogRecord) {
+    ///     let formatted = self.formatter.format(&record);
+    ///     println!("{}", formatted);
+    /// }
+    /// ```
     fn log(&self, record: LogRecord);
+    /// Optional cleanup method. Called when the logger is dropped or
+    /// when [`flush()`](crate::flush) is manually invoked.  
+    /// Perfect for file-based or buffered loggers.
     fn flush(&self) {}
 }
 
@@ -552,8 +576,7 @@ pub trait Log: Send + Sync + 'static {
 /// ----------------------------------------------------------------
 ///
 /// ### `new(min_level: Level) -> Self`  
-/// Creates a new logger with the given minimum level and a
-/// [`DefaultFormatter`] attached.
+/// Creates a new logger with the given minimum level and a [`DefaultFormatter`] attached.
 ///
 /// ### `with_formatter(min_level: Level, formatter: Arc<dyn LogFormatter>) -> Self`  
 /// Creates a logger with a custom formatter instead of the default one.
@@ -639,15 +662,12 @@ pub struct Logger {
 
 
 impl Logger {
+    /// Creates a new logger with the given minimum level and a [`DefaultFormatter`] attached.
     pub fn new(min_level: Level) -> Self {
         Self::with_formatter(min_level, Arc::new(DefaultFormatter))
     }
 
-    pub fn set_formatter(&self, new_fmt: Arc<dyn LogFormatter>) {
-        let mut f = self.formatter.write().unwrap();
-        *f = new_fmt;
-    }
-
+    /// Creates a logger with a custom formatter instead of the default one.
     pub fn with_formatter(min_level: Level, formatter: Arc<dyn LogFormatter>) -> Self {
         Logger {
             min_level,
@@ -658,6 +678,14 @@ impl Logger {
         }
     }
 
+    /// Replaces the formatter of the current logger instance.
+    pub fn set_formatter(&self, new_fmt: Arc<dyn LogFormatter>) {
+        let mut f = self.formatter.write().unwrap();
+        *f = new_fmt;
+    }
+
+    /// Enables file logging. Creates (or appends to) a file at the given path.
+    /// Returns a `Result<Self>` for error handling.
     pub fn file(mut self, path: impl Into<PathBuf>) -> Result<Self, io::Error> {
         self.file = Some(Mutex::new(
             OpenOptions::new()
@@ -668,26 +696,30 @@ impl Logger {
         Ok(self)
     }
 
+    /// Returns the current minimum log level for this logger.
     pub fn level(&self) -> Level {
         self.min_level
     }
 
+    /// Disables logging to stdout entirely (useful for file-only logging).
     pub fn no_stdout(mut self) -> Self {
         self.print_to_stdout = false;
         self
     }
 
+    /// Re-enables logging to stdout if previously disabled.
     pub fn with_stdout(mut self) -> Self {
         self.print_to_stdout = true;
         self
     }
 
-    /// THIS DOES CLONE
-    /// So use it carefully if you care about performance
+    /// Returns a **cloned** vector of all log records stored in memory.
+    /// This can be expensive for large logs—use carefully.
     pub fn get_records(&self) -> Vec<LogRecord> {
         self.records.lock().unwrap().clone()
     }
 
+    /// Clears all stored log records from memory.
     pub fn clear_records(&self) {
         self.records.lock().unwrap().clear();
     }
@@ -803,6 +835,7 @@ pub struct GlobalLogger {
 }
 
 impl GlobalLogger {
+    /// Creates a new, empty `GlobalLogger` with no active logger set.
     pub const fn new() -> Self {
         Self {
             inner: RwLock::new(None),
@@ -813,15 +846,22 @@ impl GlobalLogger {
     // we can't stop him. It won't be long till we pop him. Go to
     // dumping on the runway.)
 
+    /// Stores a logger inside the global container.  
+    /// Overwrites any existing logger if one is already set.
     pub fn set(&self, logger: Arc<dyn Log>) {
         let mut w = self.inner.write().unwrap();
         *w = Some(logger);
     }
 
+    /// Removes the currently stored logger, returning the global state
+    /// to `None`.
     pub fn clear(&self) {
         *self.inner.write().unwrap() = None;
     }
 
+    /// Retrieves the currently stored logger instance.
+    /// If no logger has been set, it will automatically return a new
+    /// default [`Logger`] with `Level::Info`.
     pub fn get(&self) -> Arc<dyn Log> {
         self.inner
             .read()
